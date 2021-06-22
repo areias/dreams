@@ -7,7 +7,30 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
 
-<title>DreamCatcher</title><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>dream_catcher-prez-local slides</title><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script><script>
+(function() {
+  function addWidgetsRenderer() {
+    var mimeElement = document.querySelector('script[type="application/vnd.jupyter.widget-view+json"]');
+    var scriptElement = document.createElement('script');
+    var widgetRendererSrc = '@jupyter-widgets/html-manager@/dist/embed-amd.js';
+    var widgetState;
+
+    // Fallback for older version:
+    try {
+      widgetState = mimeElement && JSON.parse(mimeElement.innerHTML);
+
+      if (widgetState && (widgetState.version_major < 2 || !widgetState.version_major)) {
+        widgetRendererSrc = 'jupyter-js-widgets@*/dist/embed.js';
+      }
+    } catch(e) {}
+
+    scriptElement.src = widgetRendererSrc;
+    document.body.appendChild(scriptElement);
+  }
+
+  document.addEventListener('DOMContentLoaded', addWidgetsRenderer);
+}());
+</script>
 
 <!-- General and theme style sheets -->
 <link rel="stylesheet" href="https://unpkg.com/reveal.js@4.0.2/dist/reveal.css">
@@ -14269,6 +14292,7 @@ a.anchor-link {
 .reveal {
   font-size: 160%;
 }
+
 .reveal pre {
   width: inherit;
   padding: 0.4em;
@@ -14289,6 +14313,7 @@ a.anchor-link {
 }
 
 
+.reveal li,
 .reveal p {
   font-size: 40px;
 }
@@ -14412,16 +14437,18 @@ div.jp-OutputPrompt {
 </div></section></section><section><section>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>Dive into 30,000 dreams from <a href="http://dreambank.net/">UCSC’s DreamBank</a> This presentation will walk you through using deep learning for NLP and text-to-image generation, GraphXR and Neo4j to build a dream similarity graph, identify and interpret dream clusters and visualize and explore the subconscious terrain.</p>
+<h1 id="NLP,-Deep-Learning,-Graph-Visualization-and-Analytics">NLP, Deep Learning, Graph Visualization and Analytics<a class="anchor-link" href="#NLP,-Deep-Learning,-Graph-Visualization-and-Analytics">&#182;</a></h1><p>Neo4j and GraphXR working together to survey 30,000 dream journals from <a href="http://dreambank.net/">UCSC’s DreamBank</a></p>
+<ul>
+<li>Connect similar dreams in a Dream Similarity Graph </li>
+<li>Extract Named Entities for dream interpretation</li>
+<li>Use a community detection algorithm to find dream clusters</li>
+<li>Text-to-image generation based on a dream's first sentence </li>
+<li>Inject dreamers, dreams and entities and their relationships into Neo4j</li>
+<li>Use GraphXR for analysis and visualization</li>
+</ul>
 
 </div>
-</div><div class="fragment">
-<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>While the choice of dreams data is a bit tongue-in-cheek, the methodology we use here can be applied in many other domains in order to make sense of large amounts of data, find hidden connections and create compelling visualizations.</p>
-
-</div>
-</div></div></section></section><section><section>
+</div></section></section><section><section>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p><img src="images/kineviz.png" alt=""></p>
@@ -14432,32 +14459,52 @@ div.jp-OutputPrompt {
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h1 id="Shared-Dreams-in-a-Dream-Similarity-Graph">Shared Dreams in a Dream Similarity Graph<a class="anchor-link" href="#Shared-Dreams-in-a-Dream-Similarity-Graph">&#182;</a></h1>
 </div>
-</div></section></section><section><section>
+</div><div class="fragment">
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p><a href="https://graphxrnext.kineviz.com/share/603f9ec927b62c00623fe9dd/Dream%20Similarity%20Graph/606c5d0d5ebc8f0034232ea8"><img src="images/shared-dreams.png" alt=""></a></p>
+<p>To build the Dream Similarity Graph we captured the vector representation of each dream using a Gensim Doc2Vec model trained on the dream content.</p>
+<p>We gage how similar two dreams are by their cosine similarity.</p>
+<p>The pairwise similarity score across all dreams builds a K-nearest neighbors graph where each node is a dream connected to the k most similar dreams with a similarity score above a threshold.</p>
+
+</div>
+</div></div></section></section><section><section>
+<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<p>This GraphXR view below shows dreams for the dreamer “UCSC_women” connected to similar dreams across other dreamers. The visualization evokes a dream catcher and shows which dreamers UCSC_women have the most dreams in common with.
+<a href="https://graphxrnext.kineviz.com/share/60d1e7514fb6420067aa5393/DreamCatcher:%20Deep%20Learning%20and%20Graph%20Analytics%20for%20the%20Dreamscape/60d1f00d4fb6420067aa5e05">
+         <img alt="Qries" src="images/shared-dreams.png"></a></p>
 
 </div>
 </div></section></section><section><section>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h1 id="Dream-Interpretation-with-Community-Detection-and-Named-Entity-Recognition">Dream Interpretation with Community Detection and Named Entity Recognition<a class="anchor-link" href="#Dream-Interpretation-with-Community-Detection-and-Named-Entity-Recognition">&#182;</a></h1>
+<h1 id="Dream-Interpretation-with-Named-Entity-Recognition">Dream Interpretation with Named Entity Recognition<a class="anchor-link" href="#Dream-Interpretation-with-Named-Entity-Recognition">&#182;</a></h1>
 </div>
-</div></section></section><section><section>
+</div><div class="fragment">
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p><a href="https://graphxrnext.kineviz.com/share/603f9ec927b62c00623fe9dd/Dream%20Similarity%20Graph/606b45eced79f70033ac7cc7"><img src="images/dream-entities.png" alt=""></a></p>
+<p>Using SpaCy Named Entity Recognition to tease out mentions of people, organizations, locations, dates and other informative categories. In this way, we build a topical, high-level view of individual dreamers or dream clusters.</p>
+
+</div>
+</div></div></section></section><section><section>
+<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<p>This GraphXR view shows all dreams for the dreamer “jasmine4” and the people and places most frequently mentioned. Jasmine4’s dreams are arrayed in a circle in order of date dreamt and entity node size is a function of frequency of mentions across dreams. This allows us to see how the main topics of her dreams evolve across time.
+<a href="https://graphxrnext.kineviz.com/share/60d1e7514fb6420067aa5393/DreamCatcher:%20Deep%20Learning%20and%20Graph%20Analytics%20for%20the%20Dreamscape/60d1f0994fb6420067aa5ecb">
+         <img alt="Qries" src="images/dream-entities.png"></a></p>
 
 </div>
 </div></section></section><section><section>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h1 id="Dream-snapshots-with-neural-network-powered-text-to-image-generation">Dream snapshots with neural-network powered text-to-image generation<a class="anchor-link" href="#Dream-snapshots-with-neural-network-powered-text-to-image-generation">&#182;</a></h1>
+<h1 id="Using-Community-Detection-for-Dream-Clusters-and-Text-to-image-Generation-for-Dream-Snapshots">Using Community Detection for Dream Clusters and Text-to-image Generation for Dream Snapshots<a class="anchor-link" href="#Using-Community-Detection-for-Dream-Clusters-and-Text-to-image-Generation-for-Dream-Snapshots">&#182;</a></h1>
 </div>
 </div></section></section><section><section>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p><a href="https://graphxrnext.kineviz.com/share/603f9ec927b62c00623fe9dd/Dream%20Similarity%20Graph/606b4675ed79f70033ac7cdb"><img src="images/dream-snapshots.png" alt=""></a></p>
+<p>This GraphXR view shows a dream cluster related to sports. If you hover over the dream nodes you can see the beginning sentences of the dream that were fed to the  Aleph Delta neural network to generate the resulting dream snapshot.
+<a href="https://graphxrnext.kineviz.com/share/60d1e7514fb6420067aa5393/DreamCatcher:%20Deep%20Learning%20and%20Graph%20Analytics%20for%20the%20Dreamscape/60d1efe44fb6420067aa5dd5">
+         <img alt="Qries" src="images/dream-snapshots.png"></a></p>
 
 </div>
 </div></section></section><section><section>
@@ -14468,6 +14515,7 @@ div.jp-OutputPrompt {
 </div><div class="fragment">
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<p>The Dreambank data consists of almost 30,000 dream journal entries spanning several decades submitted by 74 different dreamers.</p>
 <p><img src="images/dreambank.png" alt=""></p>
 
 </div>
@@ -14984,16 +15032,16 @@ div.jp-OutputPrompt {
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[5]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dfs</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
-<span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">dreamers</span><span class="p">:</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;../DreamScrape/dreams/&#39;</span><span class="o">+</span><span class="n">d</span><span class="p">)</span> <span class="k">as</span> <span class="n">json_file</span><span class="p">:</span>
-        <span class="n">d</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">json_file</span><span class="p">)</span>
-        <span class="n">df</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s1">&#39;dreams&#39;</span><span class="p">])</span>
-        <span class="n">df</span><span class="p">[</span><span class="s1">&#39;dreamer&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">d</span><span class="p">[</span><span class="s1">&#39;dreamer&#39;</span><span class="p">]</span>
-        <span class="n">df</span><span class="p">[</span><span class="s1">&#39;description&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">d</span><span class="p">[</span><span class="s1">&#39;description&#39;</span><span class="p">]</span>
-        <span class="n">dfs</span><span class="o">=</span><span class="n">dfs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">dr</span> <span class="ow">in</span> <span class="n">dreamers</span><span class="p">:</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;../DreamScrape/dreams/&#39;</span><span class="o">+</span><span class="n">dr</span><span class="p">)</span> <span class="k">as</span> <span class="n">json_file</span><span class="p">:</span>
+        <span class="n">jsn</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">json_file</span><span class="p">)</span>
+        <span class="n">d</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">jsn</span><span class="p">[</span><span class="s1">&#39;dreams&#39;</span><span class="p">])</span>
+        <span class="n">d</span><span class="p">[</span><span class="s1">&#39;dreamer&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">jsn</span><span class="p">[</span><span class="s1">&#39;dreamer&#39;</span><span class="p">]</span>
+        <span class="n">d</span><span class="p">[</span><span class="s1">&#39;description&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">jsn</span><span class="p">[</span><span class="s1">&#39;description&#39;</span><span class="p">]</span>
+        <span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
 
-<span class="n">dfs</span><span class="o">.</span><span class="n">index</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dfs</span><span class="p">))</span> 
+<span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">))</span> 
 </pre></div>
 
      </div>
@@ -15007,7 +15055,7 @@ div.jp-OutputPrompt {
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[5]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dfs</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 
      </div>
@@ -15117,7 +15165,7 @@ div.jp-OutputPrompt {
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[21]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dfs</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;dreamer&#39;</span><span class="p">,</span> <span class="s1">&#39;description&#39;</span><span class="p">])[</span><span class="s1">&#39;content&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;dreamer&#39;</span><span class="p">,</span> <span class="s1">&#39;description&#39;</span><span class="p">])[</span><span class="s1">&#39;content&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 
      </div>
@@ -15163,133 +15211,16 @@ Name: content, Length: 74, dtype: int64</pre>
 </div></div></section></section><section><section>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>Some dream journal entries are in German, and we can drop these.</p>
-
-</div>
-</div><div class="fragment"><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[59]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">drop</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;vonuslar.de&#39;</span><span class="p">,</span><span class="s1">&#39;zurich-f.de&#39;</span><span class="p">,</span><span class="s1">&#39;zurich-m.de&#39;</span><span class="p">,</span> <span class="s1">&#39;german-f.de&#39;</span><span class="p">,</span> <span class="s1">&#39;german-m.de&#39;</span><span class="p">]</span>
-<span class="n">dfs</span><span class="o">=</span><span class="n">dfs</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="o">~</span><span class="n">dfs</span><span class="p">[</span><span class="s1">&#39;dreamer&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">drop</span><span class="p">)]</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div></div><div class="fragment"><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[60]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">len</span><span class="p">(</span><span class="n">dfs</span><span class="p">)</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-<div class="jp-Cell-outputWrapper">
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[60]:</div>
-
-
-
-
-<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
-<pre>22415</pre>
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-</div></div><div class="fragment"><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[61]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dfs</span><span class="o">.</span><span class="n">number</span><span class="o">.</span><span class="n">nunique</span><span class="p">()</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-<div class="jp-Cell-outputWrapper">
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[61]:</div>
-
-
-
-
-<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
-<pre>9907</pre>
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-</div></div></section></section><section><section>
-<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>We add an unique ID to each dream for use later in Neo4j.</p>
-
-</div>
-</div><div class="fragment"><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[12]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dfs</span><span class="p">[</span><span class="s1">&#39;idx&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span>
-<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">dfs</span><span class="p">[</span><span class="s1">&#39;dreamer&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())):</span>
-    <span class="n">dfs</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">dfs</span><span class="p">[</span><span class="s1">&#39;dreamer&#39;</span><span class="p">]</span><span class="o">==</span><span class="n">name</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;idx&#39;</span><span class="p">]]</span> <span class="o">=</span>  <span class="n">dfs</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">dfs</span><span class="p">[</span><span class="s1">&#39;dreamer&#39;</span><span class="p">]</span><span class="o">==</span><span class="n">name</span><span class="p">][</span><span class="s1">&#39;number&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;-&quot;</span><span class="o">+</span><span class="n">x</span><span class="p">)</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div></div><div class="fragment">
-<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p>We have 22,415 dreams from 69 unique dreamers to work with.</p>
 
 </div>
-</div></div><div class="fragment"><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+</div><div class="fragment"><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[63]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dfs</span><span class="o">.</span><span class="n">idx</span><span class="o">.</span><span class="n">nunique</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">idx</span><span class="o">.</span><span class="n">nunique</span><span class="p">()</span>
 </pre></div>
 
      </div>
@@ -15326,7 +15257,7 @@ Name: content, Length: 74, dtype: int64</pre>
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[64]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dfs</span><span class="o">.</span><span class="n">dreamer</span><span class="o">.</span><span class="n">nunique</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">dreamer</span><span class="o">.</span><span class="n">nunique</span><span class="p">()</span>
 </pre></div>
 
      </div>
@@ -15371,7 +15302,7 @@ Name: content, Length: 74, dtype: int64</pre>
 </div></div></section></section><section><section>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="What-is-Doc2Vec?">What is Doc2Vec?<a class="anchor-link" href="#What-is-Doc2Vec?">&#182;</a></h2><p>Vector representation of text evolved from Bag-of-Words representation to Word2Vec to Doc2Vec. From <a href="https://cs.stanford.edu/~quocle/paragraph_vector.pdf">Distributed Representations of Sentences and Documents</a> paper.
+<h2 id="What-is-Doc2Vec?">What is Doc2Vec?<a class="anchor-link" href="#What-is-Doc2Vec?">&#182;</a></h2><p>Vector representation of text evolved from Bag-of-Words representation to Word2Vec to Doc2Vec. From <a href="https://cs.stanford.edu/~quocle/paragraph_vector.pdf">Distributed Representations of Sentences and Documents</a> paper or this great explanation in <a href="https://medium.com/wisio/a-gentle-introduction-to-doc2vec-db3e8c0cce5e">this medium post</a>!
 <img src="images/embeddings.png" alt=""></p>
 
 </div>
@@ -15414,7 +15345,7 @@ Name: content, Length: 74, dtype: int64</pre>
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[10]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">list</span><span class="p">(</span><span class="n">preprocess</span><span class="p">(</span><span class="n">dfs</span><span class="o">.</span><span class="n">loc</span><span class="p">[:</span><span class="mi">0</span><span class="p">,]))</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">list</span><span class="p">(</span><span class="n">preprocess</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:</span><span class="mi">0</span><span class="p">,]))</span>
 </pre></div>
 
      </div>
@@ -15457,7 +15388,7 @@ Name: content, Length: 74, dtype: int64</pre>
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[11]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">train_corpus</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">preprocess</span><span class="p">(</span><span class="n">dfs</span><span class="p">))</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">train_corpus</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">preprocess</span><span class="p">(</span><span class="n">df</span><span class="p">))</span>
 </pre></div>
 
      </div>
@@ -15520,7 +15451,7 @@ Name: content, Length: 74, dtype: int64</pre>
     <span class="n">sims</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">docvecs</span><span class="o">.</span><span class="n">most_similar</span><span class="p">([</span><span class="n">vector</span><span class="p">])</span> 
     <span class="k">return</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">sims</span><span class="p">[:</span><span class="n">n</span><span class="p">]]</span>
 
-<span class="n">get_most_similar</span><span class="p">(</span><span class="n">dfs</span><span class="p">[</span><span class="s1">&#39;content&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">get_most_similar</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;content&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span><span class="mi">5</span><span class="p">)</span>
 </pre></div>
 
      </div>
@@ -15573,7 +15504,7 @@ Name: content, Length: 74, dtype: int64</pre>
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dfs</span><span class="p">[</span><span class="s1">&#39;neighbors&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">dfs</span><span class="p">[</span><span class="s1">&#39;content&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">get_most_similar</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">n</span><span class="o">=</span><span class="mi">10</span><span class="p">)[</span><span class="mi">1</span><span class="p">:])</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;neighbors&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;content&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">get_most_similar</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">n</span><span class="o">=</span><span class="mi">10</span><span class="p">)[</span><span class="mi">1</span><span class="p">:])</span>
 </pre></div>
 
      </div>
@@ -15587,7 +15518,7 @@ Name: content, Length: 74, dtype: int64</pre>
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[48]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">([</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">dfs</span><span class="p">[</span><span class="s1">&#39;neighbors&#39;</span><span class="p">]],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">([</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;neighbors&#39;</span><span class="p">]],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 
@@ -15639,7 +15570,7 @@ Name: content, Length: 74, dtype: int64</pre>
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[22]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">matplotlib</span><span class="o">.</span><span class="n">pyplot</span><span class="o">.</span><span class="n">hist</span><span class="p">([</span><span class="n">x</span><span class="p">[</span><span class="mi">8</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">dfs</span><span class="p">[</span><span class="s1">&#39;neighbors&#39;</span><span class="p">]],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">matplotlib</span><span class="o">.</span><span class="n">pyplot</span><span class="o">.</span><span class="n">hist</span><span class="p">([</span><span class="n">x</span><span class="p">[</span><span class="mi">8</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;neighbors&#39;</span><span class="p">]],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 
@@ -15714,7 +15645,7 @@ a variety of named and numeric entities, including companies, locations, organiz
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">mylist</span><span class="o">=</span><span class="p">[]</span>
-<span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">dfs</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+<span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
     <span class="n">doc</span><span class="o">=</span><span class="n">nlp</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;content&#39;</span><span class="p">])</span>
     <span class="k">if</span> <span class="n">doc</span><span class="o">.</span><span class="n">ents</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">ent</span> <span class="ow">in</span> <span class="n">doc</span><span class="o">.</span><span class="n">ents</span><span class="p">:</span>
@@ -16185,7 +16116,7 @@ Name: entity_type, dtype: int64</pre>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Dreamer nodes</span>
-<span class="n">d</span><span class="o">=</span><span class="n">dfs</span><span class="p">[[</span><span class="s1">&#39;dreamer&#39;</span><span class="p">,</span><span class="s1">&#39;description&#39;</span><span class="p">]]</span>
+<span class="n">d</span><span class="o">=</span><span class="n">df</span><span class="p">[[</span><span class="s1">&#39;dreamer&#39;</span><span class="p">,</span><span class="s1">&#39;description&#39;</span><span class="p">]]</span>
 <span class="n">d</span><span class="o">=</span><span class="n">d</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span>
 <span class="n">d</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 </pre></div>
@@ -16368,7 +16299,7 @@ Name: entity_type, dtype: int64</pre>
          <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;content&#39;</span><span class="p">],</span>
         <span class="s2">&quot;date&quot;</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;head&#39;</span><span class="p">]</span> <span class="p">,</span>
         <span class="s2">&quot;number&quot;</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;number&#39;</span><span class="p">],</span>
-        <span class="s2">&quot;idx&quot;</span><span class="p">:</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;idx&#39;</span><span class="p">]}</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">dfs</span><span class="o">.</span><span class="n">iterrows</span><span class="p">()]</span>
+        <span class="s2">&quot;idx&quot;</span><span class="p">:</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;idx&#39;</span><span class="p">]}</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">()]</span>
 </pre></div>
 
      </div>
@@ -17020,7 +16951,7 @@ Name: entity_type, dtype: int64</pre>
 <p>Finally, for each dream we want to create an image related to the dream content.</p>
 <p>For this we use Aleph2Image Delta pytorch model, available as a <a href="https://colab.research.google.com/drive/1oA1fZP7N1uPBxwbGIvOEXbTsq2ORa9vb?usp=sharing#scrollTo=2aDcCMUnjQLh">Google Colaboratory notebook</a> developed by tech artist <a href="https://twitter.com/advadnoun">@advadnoun</a> on Twitter.</p>
 <p>Google Colaboratory allows you to use a free GPU instance to run the Pytorch model and generate images based on a text prompt. We use the first sentence of a dream journal entry.</p>
-<p>Host your resulting images on Github so we can link to them in GraphXR and make them part of the dreamscape as we detail in section 2.4.</p>
+<p>Host your resulting images on Github so we can link to them in GraphXR and make them part of the dreamscape.</p>
 
 </div>
 </div></section></section><section><section>
@@ -17032,8 +16963,8 @@ Name: entity_type, dtype: int64</pre>
 </div></section></section><section><section>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>Some of my favourites images include this one from dreamer Chuck's dream dated 1992.</p>
-<p><img src="images/snapshot1.png" alt=""></p>
+<p>My favourites images include this one from dreamer Chuck's dream in 1992.
+<img src="images/snapshot1.png" alt=""></p>
 
 </div>
 </div></section></section><section><section>
@@ -17046,12 +16977,22 @@ Name: entity_type, dtype: int64</pre>
 </div></section></section><section><section>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h1 id="Visualization-and-exploration-with-GraphXR">Visualization and exploration with GraphXR<a class="anchor-link" href="#Visualization-and-exploration-with-GraphXR">&#182;</a></h1>
+<h1 id="Get-Started-with-GraphXR">Get Started with GraphXR<a class="anchor-link" href="#Get-Started-with-GraphXR">&#182;</a></h1>
 </div>
-</div></section></section><section><section>
+</div><div class="fragment">
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p><img src="images/kineviz-login.png" alt=""></p>
+<p>First, <a href="https://helpcenter.kineviz.com/user-guides/Working%20version/Logging-In-and-Out-of-GraphXR.985825405.html">sign up to use GraphXR.</a></p>
+<p>Then <a href="https://helpcenter.kineviz.com/user-guides/Working%20version/Introducing-GraphXR-Projects.1042743346.html#IntroducingGraphXRProjects-CreateaprojectconnectedtoaNeo4jdatabase">create a project and connect it to your local Neo4j instance</a> running on Docker.</p>
+<p>Open your project, which will be empty to begin with. <a href="https://helpcenter.kineviz.com/user-guides/Working%20version/Working-in-the-Project-Space.985825420.html">Here are some tips to help you get quickly aquainted with the GraphXR project space.</a></p>
+<p>You can find detailed instructions and videos on how to recreate the visualizations I showed on our <a href="https://www.kineviz.com/post/2021/5/3/dreamcatcher-deep-learning-and-graph-analytics-for-the-dreamscape">original blogpost and jupyter notebook.</a></p>
+
+</div>
+</div></div></section></section><section><section>
+<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<p><a href="https://graphxr.kineviz.com/login">
+         <img alt="Qries" src="images/kineviz-login.png"></a></p>
 
 </div>
 </div></section></section>
