@@ -10,7 +10,7 @@ While the choice of dreams data is a bit tongue-in-cheek, the methodology we use
 
 See our [blogpost](https://www.kineviz.com/post/2021/5/3/dreamcatcher-deep-learning-and-graph-analytics-for-the-dreamscape) with more details including interactive GraphXR visualizations.
 
-Presented at [Nodes 2021 Conferende](https://neo4j.brand.live/c/2021nodes-homepage). You can find the presentation slides [here]( https://areias.github.io/dreams/#/) and all the code to recreate the  project in this repository.
+Presented at [Nodes 2021 Conference](https://neo4j.brand.live/c/2021nodes-homepage). You can find the presentation slides [here](https://areias.github.io/dreams/#/) and all the code to recreate the  project in this repository.
 
 
 
