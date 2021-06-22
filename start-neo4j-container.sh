@@ -22,7 +22,7 @@ docker run \
     -e NEO4J_apoc_export_file_enabled=true \
     -e NEO4J_apoc_import_file_enabled=true \
     -e NEO4J_apoc_import_file_use__neo4j__config=true \
-    -e NEO4JLABS_PLUGINS='["apoc", "graph-data-science"]' \
+    -e NEO4JLABS_PLUGINS='["graph-data-science"]' \
 	--name neo4j \
 	  neo4j \
 
